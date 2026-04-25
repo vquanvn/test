@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Application - E-commerce Analytics</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Web Application</h1>
+      <p>E-commerce Analytics & Recommendation</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Cau hinh Gateway</h2>
+        <label for="baseUrl">Gateway URL</label>
+        <input id="baseUrl" value="http://localhost:3000/api" />
+      </section>
+
+      <section class="grid">
+        <div class="card">
+          <h2>Dang ky</h2>
+          <input id="regEmail" placeholder="Email" />
+          <input id="regName" placeholder="Ho va ten" />
+          <input id="regPassword" placeholder="Mat khau" type="password" />
+          <button id="btnRegister">Dang ky</button>
+        </div>
+
+        <div class="card">
+          <h2>Dang nhap</h2>
+          <input id="loginEmail" placeholder="Email" />
+          <input id="loginPassword" placeholder="Mat khau" type="password" />
+          <button id="btnLogin">Dang nhap</button>
+          <p id="authInfo"></p>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>San pham</h2>
+        <button id="btnLoadProducts">Tai danh sach san pham</button>
+        <pre id="productsOutput"></pre>
+      </section>
+
+      <section class="card">
+        <h2>Tao don hang</h2>
+        <input id="orderUserId" placeholder="User ID" />
+        <input id="orderProductId" placeholder="Product ID" />
+        <input id="orderQuantity" placeholder="So luong" type="number" value="1" />
+        <input id="orderAddress" placeholder="Dia chi giao hang" />
+        <button id="btnCreateOrder">Tao don</button>
+        <pre id="orderOutput"></pre>
+      </section>
+
+      <section class="card">
+        <h2>Goi y theo user</h2>
+        <input id="recUserId" placeholder="customer_unique_id hoac user id" />
+        <button id="btnGetRecs">Lay goi y</button>
+        <pre id="recOutput"></pre>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

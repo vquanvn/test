@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Application Mock</title>
+    <style>
+      body {
+        margin: 0;
+        background: #0f172a;
+        color: #e2e8f0;
+        font-family: Arial, sans-serif;
+      }
+      .phone {
+        max-width: 420px;
+        margin: 20px auto;
+        background: #111827;
+        border-radius: 18px;
+        border: 1px solid #334155;
+        padding: 14px;
+      }
+      h1 {
+        font-size: 20px;
+        margin: 0 0 10px;
+      }
+      input, button {
+        width: 100%;
+        margin: 8px 0;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #475569;
+      }
+      button {
+        background: #06b6d4;
+        color: #082f49;
+        font-weight: bold;
+        border: none;
+      }
+      pre {
+        white-space: pre-wrap;
+        background: #020617;
+        color: #93c5fd;
+        padding: 10px;
+        border-radius: 10px;
+        min-height: 120px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="phone">
+      <h1>Mobile App (Mock)</h1>
+      <input id="baseUrl" value="http://localhost:3000/api" />
+      <input id="userId" placeholder="Nhap user id" />
+      <button id="btnRec">Lay goi y</button>
+      <button id="btnTop">Top products</button>
+      <pre id="result"></pre>
+    </div>
+
+    <script>
+      function baseUrl() {
+        return document.getElementById("baseUrl").value.replace(/\/$/, "");
+      }
+
+      function show(data) {
+        document.getElementById("result").textContent =
+          typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      }
+
+      document.getElementById("btnRec").addEventListener("click", async () => {
+        const userId = document.getElementById("userId").value || "1";
+        const resp = await fetch(`${baseUrl()}/recommendations/recommendations/user/${userId}`);
+        show(await resp.json());
+      });
+
+      document.getElementById("btnTop").addEventListener("click", async () => {
+        const resp = await fetch(`${baseUrl()}/recommendations/recommendations/top-products?limit=5`);
+        show(await resp.json());
+      });
+    </script>
+  </body>
+</html>

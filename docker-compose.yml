@@ -1,0 +1,101 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecommerce-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  mongo:
+    image: mongo:7
+    container_name: ecommerce-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  user-service:
+    build:
+      context: ./backend/user-service
+    container_name: user-service
+    environment:
+      PORT: 3001
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      JWT_SECRET: super-secret-key
+      SEED_ADMIN_EMAIL: admin@example.com
+      SEED_ADMIN_PASSWORD: admin123
+      SEED_ADMIN_FULL_NAME: Admin User
+    depends_on:
+      - postgres
+    ports:
+      - "3001:3001"
+
+  order-service:
+    build:
+      context: ./backend/order-service
+    container_name: order-service
+    environment:
+      PORT: 3002
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/ecommerce
+      MONGO_URL: mongodb://mongo:27017
+      MONGO_DB_NAME: ecommerce
+    depends_on:
+      - postgres
+      - mongo
+    ports:
+      - "3002:3002"
+
+  recommendation-service:
+    build:
+      context: ./backend/recommendation-service
+    container_name: recommendation-service
+    environment:
+      PORT: 3003
+      DATABRICKS_HOST: ${DATABRICKS_HOST:-}
+      DATABRICKS_TOKEN: ${DATABRICKS_TOKEN:-}
+      DATABRICKS_WAREHOUSE_ID: ${DATABRICKS_WAREHOUSE_ID:-}
+    ports:
+      - "3003:3003"
+
+  api-gateway:
+    build:
+      context: ./backend/api-gateway
+    container_name: api-gateway
+    environment:
+      PORT: 3000
+      USER_SERVICE_URL: http://user-service:3001
+      ORDER_SERVICE_URL: http://order-service:3002
+      RECOMMENDATION_SERVICE_URL: http://recommendation-service:3003
+    depends_on:
+      - user-service
+      - order-service
+      - recommendation-service
+    ports:
+      - "3000:3000"
+
+  web-app:
+    build:
+      context: ./frontend/web-app
+    container_name: web-app
+    depends_on:
+      - api-gateway
+    ports:
+      - "8080:80"
+
+  mobile-app:
+    build:
+      context: ./frontend/mobile-app
+    container_name: mobile-app
+    depends_on:
+      - api-gateway
+    ports:
+      - "8081:80"
+
+volumes:
+  postgres_data:
+  mongo_data:
